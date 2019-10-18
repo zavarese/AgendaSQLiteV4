@@ -8,14 +8,26 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.edu.ifsp.agendasqlite.R;
+import br.edu.ifsp.agendasqlite.data.ContatoAdapter;
+import br.edu.ifsp.agendasqlite.data.ContatoDAO;
+import br.edu.ifsp.agendasqlite.model.Contato;
 
 public class MainActivity extends AppCompatActivity {
+
+    List<Contato> contatos = new ArrayList<>();
+    ContatoDAO dao;
+    static ContatoAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +35,31 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        dao=new ContatoDAO(this);
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerview);
+        RecyclerView.LayoutManager layout = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layout);
+
+        contatos = dao.listaContatos();
+
+        adapter = new ContatoAdapter(contatos);
+
+        recyclerView.setAdapter(adapter);
+
+        adapter.setClickListener(new ContatoAdapter.ItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                final Contato c = contatos.get(position);
+                Intent i = new Intent(getApplicationContext(), DetalheActivity.class);
+                i.putExtra("contato",c);
+                startActivityForResult(i,2);
+
+            }
+        });
+
+
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

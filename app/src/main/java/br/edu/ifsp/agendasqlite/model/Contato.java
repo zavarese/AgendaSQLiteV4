@@ -1,6 +1,8 @@
 package br.edu.ifsp.agendasqlite.model;
 
-public class Contato {
+import java.io.Serializable;
+
+public class Contato implements Serializable {
 
     private int id;
     private String nome;
@@ -15,6 +17,18 @@ public class Contato {
         this.fone = fone;
         this.email = email;
     }
+
+
+    public boolean equals(Object obj)
+    {
+        Contato c2= (Contato) obj;
+        if (this.id ==c2.getId())
+            return true;
+           else
+            return false;
+
+    }
+
 
     public int getId() {
         return id;
