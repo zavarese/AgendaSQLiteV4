@@ -3,9 +3,11 @@ package br.edu.ifsp.agendasqlite.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import br.edu.ifsp.agendasqlite.R;
 import br.edu.ifsp.agendasqlite.data.ContatoDAO;
@@ -67,7 +69,12 @@ public class DetalheActivity extends AppCompatActivity {
             c.setEmail(email);
 
             dao.alterarContato(c);
+            Log.d("ID: ", Integer.toString(c.getId()));
+            Log.d("NOME: ",c.getNome());
+
             MainActivity.adapter.atualizaContatoAdapter(c);
+
+            Toast.makeText(getApplicationContext(),"Contato alterado",Toast.LENGTH_LONG).show();
 
             finish();
         }
@@ -77,6 +84,7 @@ public class DetalheActivity extends AppCompatActivity {
             dao.excluirContato(c);
             MainActivity.adapter.apagaContatoAdapter(c);
 
+            Toast.makeText(getApplicationContext(),"Contato excluído",Toast.LENGTH_LONG).show();
             finish();
 
         }

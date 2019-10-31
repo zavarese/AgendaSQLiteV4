@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import br.edu.ifsp.agendasqlite.R;
 import br.edu.ifsp.agendasqlite.data.ContatoDAO;
@@ -43,9 +44,12 @@ public class CadastroActivity extends AppCompatActivity {
 
             Contato c = new Contato(nome,fone,email);
 
-            dao.incluirContato(c);
+            int idContato = (int) dao.incluirContato(c);
+            c.setId(idContato);
 
             MainActivity.adapter.adicionaContatoAdapter(c);
+
+            Toast.makeText(getApplicationContext(),"Contato inserido",Toast.LENGTH_LONG).show();
 
             finish();
 

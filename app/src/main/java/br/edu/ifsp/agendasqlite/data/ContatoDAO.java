@@ -54,8 +54,9 @@ public class ContatoDAO {
     }
 
 
-    public void incluirContato (Contato c)
+    public long incluirContato (Contato c)
     {
+
         database = dbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -63,9 +64,10 @@ public class ContatoDAO {
         values.put(SQLiteHelper.KEY_FONE, c.getFone());
         values.put(SQLiteHelper.KEY_EMAIL, c.getEmail());
 
-        database.insert(SQLiteHelper.TABLE_NAME, null, values);
+        long id = database.insert(SQLiteHelper.TABLE_NAME, null, values);
 
         database.close();
+        return id;
 
     }
 
