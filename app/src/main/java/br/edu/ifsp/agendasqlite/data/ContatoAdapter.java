@@ -63,8 +63,10 @@ public class ContatoAdapter
 
     }
 
-
-
+    public List<Contato> getContactListFiltered()
+    {
+        return contactListFiltered;
+    }
 
     public void setClickListener(ItemClickListener itemClickListener)
     {

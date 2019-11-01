@@ -63,7 +63,8 @@ public class MainActivity extends AppCompatActivity {
         adapter.setClickListener(new ContatoAdapter.ItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                final Contato c = contatos.get(position);
+                final Contato c = adapter.getContactListFiltered().get(position);
+
                 Intent i = new Intent(getApplicationContext(), DetalheActivity.class);
                 i.putExtra("contato",c);
                 startActivityForResult(i,2);
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
 
-                  Contato c =  contatos.get(viewHolder.getAdapterPosition());
+                  Contato c =  adapter.getContactListFiltered().get(viewHolder.getAdapterPosition());
                   dao.excluirContato(c);
                   adapter.apagaContatoAdapter(c);
                   Toast.makeText(getApplicationContext(),"Contato apagado", Toast.LENGTH_LONG).show();
@@ -153,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String query) {
                 adapter.getFilter().filter(query);
+
                 return true;
             }
         });
