@@ -12,7 +12,15 @@
         android:id="@+id/nome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="30sp"/>
+        android:textSize="23sp"/>
+
+        <CheckBox
+            android:button="@android:drawable/btn_star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/favorite"
+            android:background="@android:color/transparent"
+            android:layout_gravity="right"/>
 
     </androidx.cardview.widget.CardView>
 

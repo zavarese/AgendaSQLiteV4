@@ -4,8 +4,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -138,25 +141,27 @@ public class ContatoAdapter
             implements View.OnClickListener
     {
         final TextView nome;
+        final CheckBox favorite;
 
         public ContatoViewHolder(@NonNull View itemView) {
             super(itemView);
             nome = (TextView) itemView.findViewById(R.id.nome);
+            favorite = (CheckBox) itemView.findViewById(R.id.favorite);
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-              if (clickListener!=null)
-                  clickListener.onItemClick(getAdapterPosition());
+              if (clickListener!=null) {
+                  clickListener.onItemClick(v, getAdapterPosition());
+              }
         }
     }
 
 
     public  interface ItemClickListener
     {
-        void onItemClick(int position);
+        void onItemClick(View v, int position);
     }
-
 
 }

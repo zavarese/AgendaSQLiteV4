@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     List<Contato> contatos = new ArrayList<>();
     ContatoDAO dao;
     static ContatoAdapter adapter;
+    Boolean isEnable = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,12 +64,17 @@ public class MainActivity extends AppCompatActivity {
 
         adapter.setClickListener(new ContatoAdapter.ItemClickListener() {
             @Override
-            public void onItemClick(int position) {
+            public void onItemClick(View view, int position) {
+                long viewId = view.getId();
                 final Contato c = adapter.getContactListFiltered().get(position);
 
-                Intent i = new Intent(getApplicationContext(), DetalheActivity.class);
-                i.putExtra("contato",c);
-                startActivityForResult(i,2);
+                if (viewId == R.id.nome) {
+                    Intent i = new Intent(getApplicationContext(), DetalheActivity.class);
+                    i.putExtra("contato",c);
+                    startActivityForResult(i,2);
+                }else{
+
+                }
 
             }
         });
@@ -176,4 +183,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }
