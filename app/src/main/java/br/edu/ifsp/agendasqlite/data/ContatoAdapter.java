@@ -9,9 +9,11 @@ import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -21,15 +23,26 @@ import java.util.List;
 
 import br.edu.ifsp.agendasqlite.R;
 import br.edu.ifsp.agendasqlite.model.Contato;
+import br.edu.ifsp.agendasqlite.model.OnRecyclerViewItemClickListener;
 
 public class ContatoAdapter
         extends RecyclerView.Adapter<ContatoAdapter.ContatoViewHolder>
-        implements Filterable  {
+        implements Filterable, View.OnClickListener  {
 
     static List<Contato> contatos;
     List<Contato> contactListFiltered;
 
     private static ItemClickListener clickListener;
+
+    private static OnRecyclerViewItemClickListener mListener;
+
+    @Override
+    public void onClick(View v) {
+        if (mListener != null) {
+            ViewModel model = (ViewModel) v.getTag();
+            mListener.onItemClick(v, model);
+        }
+    }
 
 
     public void adicionaContatoAdapter(Contato c)
@@ -70,13 +83,13 @@ public class ContatoAdapter
     {
         return contactListFiltered;
     }
-
+/*
     public void setClickListener(ItemClickListener itemClickListener)
     {
         clickListener = itemClickListener;
 
     }
-
+*/
     public ContatoAdapter(List<Contato> contatos)
     {
         this.contatos = contatos;
@@ -93,8 +106,52 @@ public class ContatoAdapter
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ContatoViewHolder holder, int position) {
-            holder.nome.setText(contactListFiltered.get(position).getNome());
+    public void onBindViewHolder(@NonNull final ContatoViewHolder holder, final int position) {
+        holder.nome.setText(contactListFiltered.get(position).getNome());
+        CheckBox favorite = holder.favorite.findViewById(R.id.favorite);
+
+        //No carragamento da pagina
+        if(contactListFiltered.get(position).getFavorito()==1){
+            favorite.setChecked(true);
+        }else{
+            favorite.setChecked(false);
+        }
+
+        final LinearLayout rlyItem = holder.rlyItem;
+        final CheckBox favorito = holder.favorite;
+        final TextView nome = holder.nome;
+
+        nome.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                mListener.onItemClick(position);
+            }
+        });
+
+        favorito.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                if (((CheckBox) view).isChecked()) {
+                    favorito.setChecked(false);
+                } else {
+                    favorito.setChecked(true);
+                }
+                // Inform to Activity or the Fragment where the RecyclerView reside.
+                mListener.onItemCheckBoxChecked(((CheckBox) view).isChecked(), position, (CheckBox) view);
+            }
+        });
+
+        /*
+        if(contactListFiltered.get(position).getFavorito() == 0){
+                holder.favorite.setChecked(false);
+        }else{
+                holder.favorite.setChecked(true);
+        }
+         */
+
+    }
+
+    // Define the method that allows the parent activity or fragment to define the listener.
+    public void setOnRecyclerViewItemClickListener(OnRecyclerViewItemClickListener<ViewModel> listener) {
+        this.mListener = listener;
     }
 
     @Override
@@ -113,7 +170,7 @@ public class ContatoAdapter
                 } else {
                     List<Contato> filteredList = new ArrayList<>();
                     for (Contato row : contatos) {
-                        if (row.getNome().toLowerCase().contains(charString.toLowerCase()) ) {
+                        if (row.getNome().toLowerCase().contains(charString.toLowerCase()) || row.getEmail().toLowerCase().contains(charString.toLowerCase())) {
                             filteredList.add(row);
                         }
                     }
@@ -142,11 +199,14 @@ public class ContatoAdapter
     {
         final TextView nome;
         final CheckBox favorite;
+        final LinearLayout rlyItem;
 
         public ContatoViewHolder(@NonNull View itemView) {
             super(itemView);
             nome = (TextView) itemView.findViewById(R.id.nome);
             favorite = (CheckBox) itemView.findViewById(R.id.favorite);
+            rlyItem = (LinearLayout) itemView.findViewById(R.id.rlyitem);
+
             itemView.setOnClickListener(this);
         }
 
@@ -163,5 +223,7 @@ public class ContatoAdapter
     {
         void onItemClick(View v, int position);
     }
+
+
 
 }

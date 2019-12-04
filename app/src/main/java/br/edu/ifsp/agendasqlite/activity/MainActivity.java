@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -35,6 +37,7 @@ import br.edu.ifsp.agendasqlite.R;
 import br.edu.ifsp.agendasqlite.data.ContatoAdapter;
 import br.edu.ifsp.agendasqlite.data.ContatoDAO;
 import br.edu.ifsp.agendasqlite.model.Contato;
+import br.edu.ifsp.agendasqlite.model.OnRecyclerViewItemClickListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,18 +65,33 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView.setAdapter(adapter);
 
-        adapter.setClickListener(new ContatoAdapter.ItemClickListener() {
+        adapter.setOnRecyclerViewItemClickListener(new OnRecyclerViewItemClickListener() {
             @Override
-            public void onItemClick(View view, int position) {
-                long viewId = view.getId();
+            public void onItemClick(View view, Object o) {
+
+            }
+
+            @Override
+            public void onItemClick(int position) {
+                // Do something when item clicked.
+                final Contato c = adapter.getContactListFiltered().get(position);
+                Intent i = new Intent(getApplicationContext(), DetalheActivity.class);
+                i.putExtra("contato",c);
+                startActivityForResult(i,2);
+            }
+
+            @Override
+            public void onItemCheckBoxChecked(boolean isChecked, int position, CheckBox chkBox) {
+                CheckBox favorito = chkBox;
                 final Contato c = adapter.getContactListFiltered().get(position);
 
-                if (viewId == R.id.nome) {
-                    Intent i = new Intent(getApplicationContext(), DetalheActivity.class);
-                    i.putExtra("contato",c);
-                    startActivityForResult(i,2);
+                // Do something when check box check state change.
+                if(isChecked){
+                    dao.favoritoContato(0,c.getId());
+                    favorito.setChecked(false);
                 }else{
-
+                    dao.favoritoContato(1,c.getId());
+                    favorito.setChecked(true);
                 }
 
             }

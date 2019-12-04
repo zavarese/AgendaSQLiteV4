@@ -43,6 +43,9 @@ public class ContatoDAO {
            c.setNome(cursor.getString(1));
            c.setFone(cursor.getString(2));
            c.setEmail(cursor.getString(3));
+           c.setFavorito(cursor.getInt(4));
+           c.setFone2(cursor.getString(5));
+           c.setNascimento(cursor.getString(6));
 
            contatos.add(c);
         }
@@ -63,6 +66,9 @@ public class ContatoDAO {
         values.put(SQLiteHelper.KEY_NOME, c.getNome());
         values.put(SQLiteHelper.KEY_FONE, c.getFone());
         values.put(SQLiteHelper.KEY_EMAIL, c.getEmail());
+        values.put(SQLiteHelper.KEY_FAVORITO, 0);
+        values.put(SQLiteHelper.KEY_FONE_2, c.getFone2());
+        values.put(SQLiteHelper.KEY_NASCIMENTO, c.getNascimento());
 
         long id = database.insert(SQLiteHelper.TABLE_NAME, null, values);
 
@@ -79,9 +85,25 @@ public class ContatoDAO {
         values.put(SQLiteHelper.KEY_NOME, c.getNome());
         values.put(SQLiteHelper.KEY_FONE, c.getFone());
         values.put(SQLiteHelper.KEY_EMAIL, c.getEmail());
+        values.put(SQLiteHelper.KEY_FAVORITO, c.getFavorito());
+        values.put(SQLiteHelper.KEY_FONE_2, c.getFone2());
+        values.put(SQLiteHelper.KEY_NASCIMENTO, c.getNascimento());
 
         database.update(SQLiteHelper.TABLE_NAME, values,
                      SQLiteHelper.KEY_ID +"=" +c.getId(),null);
+
+        database.close();
+    }
+
+    public void favoritoContato(int favorito, int id)
+    {
+        database = dbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(SQLiteHelper.KEY_FAVORITO, favorito);
+
+        database.update(SQLiteHelper.TABLE_NAME, values,
+                SQLiteHelper.KEY_ID +"=" + id,null);
 
         database.close();
     }
@@ -90,8 +112,8 @@ public class ContatoDAO {
     {
         database = dbHelper.getWritableDatabase();
 
-        database.delete(SQLiteHelper.TABLE_NAME,
-                        SQLiteHelper.KEY_ID +"="+ c.getId(),null);
+        database.delete(SQLiteHelper.TABLE_NAME,SQLiteHelper.KEY_ID +"="+ c.getId(),null);
+        //database.delete(SQLiteHelper.TABLE_NAME,null,null);
 
         database.close();
 
